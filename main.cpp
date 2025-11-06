@@ -7,8 +7,6 @@
 #include "bin_tree.h"
 #include "dump.h"
 
-
-
 int main() {
 
     Node* node1 = NodeInit(3, NULL, NULL);
@@ -17,10 +15,14 @@ int main() {
     Node* node5 = NodeInit(20, node3, NULL);
     Node* node6 = NodeInit(5, node1, node2);
     Node* node4 = NodeInit(10, node6, node5);
-    
+
     Tree* tree = TreeInit(6, node4);
-    PrintNode(node4);
-    TreeDump(tree);
+    
+    Node* node_x = NodeInit(8, NULL, NULL);
+    TreeInsertNode(tree, node_x);
+    char* buffer = (char*)calloc(1000, sizeof(char));
+
+    free(buffer);
 
     TreeDestroy(tree);
 

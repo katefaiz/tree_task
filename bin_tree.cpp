@@ -5,19 +5,25 @@
 
 #include "tree_types.h"
 #include "bin_tree.h"
+#include "dump.h"
 
-TreeError PrintNode(const Node* node) {
+int PrintTree(const Node* node, char* buffer) {
     assert(node);
+    assert(buffer);
 
-    printf("(");
+    int pos = 0;
+    pos += sprintf(buffer + pos, "(");
     if (node->left) 
-        PrintNode(node->left);
-    printf("%d ", node->value);
-    if (node->right) 
-        PrintNode(node->right);
-    printf(")");
+        pos += PrintTree(node->left, buffer + pos);
     
-    return TREE_NO_ERROR;
+    pos += sprintf(buffer + pos, "%d ", node->value);
+    
+    if (node->right) 
+        pos += PrintTree(node->right, buffer + pos);
+    
+    pos += sprintf(buffer + pos, ")");
+    
+    return pos;
 }
 
 Node* NodeInit(TreeElem value, Node* left, Node* right) {
@@ -75,6 +81,7 @@ TreeError TreeDestroy(Tree* tree) {
 TreeError TreeInsertNode(Tree* tree, Node* node) {
     assert(tree);
     assert(node);
+    TreeDump(tree);
 
     if(tree->root == NULL) {
         tree->root = node;
@@ -101,5 +108,7 @@ TreeError TreeInsertNode(Tree* tree, Node* node) {
     }
 
     tree->size++;
+    TreeDump(tree);
+
     return TREE_NO_ERROR;
 }
