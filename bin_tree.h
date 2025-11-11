@@ -5,7 +5,7 @@
 
 int PrintTree(const Node* node, char* buffer);
 Node* NodeInit(TreeElem value, Node* left, Node* right);
-Tree* TreeInit(size_t size, Node* root);
+Tree* TreeInit(size_t size, TreeElem value);
 TreeError NodeDestroy(Node* node);
 TreeError TreeDestroy(Tree* tree);
 TreeError TreeInsertNode(Tree* tree, Node* node);

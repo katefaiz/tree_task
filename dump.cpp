@@ -20,7 +20,7 @@ TreeError TreeDump(Tree *tree) {
     fprintf(filestream, "\n");
     fprintf(filestream, "}");
 
-    char* buffer = (char*)calloc(1024, sizeof(char));
+    char* buffer = (char*)calloc(BUFFER_CONST, sizeof(char));
     if (buffer == NULL) {
         printf("Calloc error\n");
         return TREE_MEMORY_ERROR;
@@ -59,7 +59,7 @@ TreeError DumpCreateNode(Node* node, FILE *filestream) {
     assert(filestream);
 
     fprintf(filestream, "\tnode%p[shape=Mrecord, style=\"rounded, filled\", fillcolor=\"lightgreen\", "
-                       "label=\"{%p | {%d} | {%p | %p}}\"]\n", 
+                        "label=\"{%p | {%d} | {%p | %p}}\"]\n", 
             node, node, node->value, 
             node->left, node->right);
 

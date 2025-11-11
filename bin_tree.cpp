@@ -37,12 +37,11 @@ Node* NodeInit(TreeElem value, Node* left, Node* right) {
     node->right = right;
     node->value = value;
 
-
     return node;
 }
 
-Tree* TreeInit(size_t size, Node* root) {
-    assert(root);
+Tree* TreeInit(size_t size, TreeElem value) {
+    Node* root = NodeInit(value, NULL, NULL);
     Tree* tree = (Tree*)calloc(1, sizeof(Tree));
     if (tree == NULL) {
         printf("Calloc error\n");

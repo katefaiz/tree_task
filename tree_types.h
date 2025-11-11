@@ -4,6 +4,7 @@
 #include <math.h>
 #define TreeElem int
 #define POIZON 666
+#define BUFFER_CONST 1024
 
 struct Node {
     TreeElem value;
