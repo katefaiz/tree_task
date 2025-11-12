@@ -33,15 +33,15 @@ Node* NodeInit(TreeElem value, Node* left, Node* right) {
         printf("Calloc error\n");
         return NULL;
     }
-    node->left = left;
+    node->left  = left;
     node->right = right;
     node->value = value;
 
     return node;
 }
 
-Tree* TreeInit(size_t size, TreeElem value) {
-    Node* root = NodeInit(value, NULL, NULL);
+Tree* TreeInit(size_t size, Node* root) {
+    assert(root);
     Tree* tree = (Tree*)calloc(1, sizeof(Tree));
     if (tree == NULL) {
         printf("Calloc error\n");
@@ -89,7 +89,7 @@ TreeError TreeInsertNode(Tree* tree, Node* node) {
     }
 
     Node* current = tree->root;
-    Node* parent = NULL;
+    Node* parent  = NULL;
 
     while (current != NULL) {
         parent = current;
@@ -101,7 +101,7 @@ TreeError TreeInsertNode(Tree* tree, Node* node) {
     }
 
     if (node->value <= parent->value) {
-        parent->left = node;
+        parent->left  = node;
     } else {
         parent->right = node;
     }

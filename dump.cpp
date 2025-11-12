@@ -28,7 +28,7 @@ TreeError TreeDump(Tree *tree) {
 
     fclose(filestream);
 
-    int id = rand();
+    int id = rand() % 20 + 1;
     sprintf(buffer, "dot -Tpng tree.dot -o png/dump%d.png", id);
     int status = system(buffer);
     if (status != 0) {
@@ -60,8 +60,7 @@ TreeError DumpCreateNode(Node* node, FILE *filestream) {
 
     fprintf(filestream, "\tnode%p[shape=Mrecord, style=\"rounded, filled\", fillcolor=\"lightgreen\", "
                         "label=\"{%p | {%d} | {%p | %p}}\"]\n", 
-            node, node, node->value, 
-            node->left, node->right);
+                        node, node, node->value, node->left, node->right);
 
     if (node->left) {
         fprintf(filestream, "\tnode%p -> node%p\n", node, node->left);
@@ -78,20 +77,18 @@ TreeError DumpCreateNode(Node* node, FILE *filestream) {
 
 
 TreeError MakeHTML(const Tree *tree, FILE *html_file, int test_id) {
-    assert(tree != NULL);
-    assert(html_file != NULL);
+    assert(tree);
+    assert(html_file);
     
     fprintf(html_file, "<pre>\n<hr>\n    <font size=\"10\"> ");
     fprintf(html_file, "TREE_DUMP\n");
 
-
     fprintf(html_file, "    Sort Tree : ");
-    char* buffer = (char*)calloc(1000, sizeof(char));
+    char* buffer = (char*)calloc(BUFFER_CONST, sizeof(char));
     PrintTree(tree->root, buffer);
     fprintf(html_file, "%s\n", buffer);
     fprintf(html_file, "\n");
     
-
     fprintf(html_file, "<img src=png/dump%d.png>\n", test_id);
 
     free(buffer);
