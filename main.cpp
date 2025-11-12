@@ -18,8 +18,8 @@ int main() {
 
     Tree* tree = TreeInit(6, node4);
     
-    Node* node_x = NodeInit(8, NULL, NULL);
-    TreeInsertNode(tree, node_x);
+    //Node* node_x = NodeInit(8, NULL, NULL);
+    TreeInsertNode(tree, 8);
 
     TreeDestroy(tree);
 

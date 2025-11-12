@@ -77,11 +77,11 @@ TreeError TreeDestroy(Tree* tree) {
     return TREE_NO_ERROR;
 }
 
-TreeError TreeInsertNode(Tree* tree, Node* node) {
+TreeError TreeInsertNode(Tree* tree, TreeElem value) {//todo подавать в аргументы указатель н адерево и значение, которе я хочу положить
     assert(tree);
-    assert(node);
     TreeDump(tree);
 
+    Node* node = NodeInit(value, NULL, NULL);
     if(tree->root == NULL) {
         tree->root = node;
         tree->size = 1;

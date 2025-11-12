@@ -8,6 +8,6 @@ Node* NodeInit(TreeElem value, Node* left, Node* right);
 Tree* TreeInit(size_t size, Node* root);
 TreeError NodeDestroy(Node* node);
 TreeError TreeDestroy(Tree* tree);
-TreeError TreeInsertNode(Tree* tree, Node* node);
+TreeError TreeInsertNode(Tree* tree, TreeElem value);
 
 #endif //BIN_TREE_H
