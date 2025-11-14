@@ -16,7 +16,7 @@ int PrintTree(const Node* node, char* buffer) {
     if (node->left) 
         pos += PrintTree(node->left, buffer + pos);
     
-    pos += sprintf(buffer + pos, "%d ", node->value);
+    pos += sprintf(buffer + pos, "%s ", node->value);
     
     if (node->right) 
         pos += PrintTree(node->right, buffer + pos);
@@ -61,6 +61,9 @@ TreeError NodeDestroy(Node* node) {
 
     NodeDestroy(node->left);
     NodeDestroy(node->right);
+    if (node->value != NULL) {
+        free(node->value);
+    }
     free(node);
 
     return TREE_NO_ERROR;
@@ -77,7 +80,7 @@ TreeError TreeDestroy(Tree* tree) {
     return TREE_NO_ERROR;
 }
 
-TreeError TreeInsertNode(Tree* tree, TreeElem value) {//todo подавать в аргументы указатель н адерево и значение, которе я хочу положить
+TreeError TreeInsertNode(Tree* tree, TreeElem value) {
     assert(tree);
     TreeDump(tree);
 

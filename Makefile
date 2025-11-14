@@ -9,7 +9,7 @@ CXXFLAGS := -std=c++11 -D_DEBUG -ggdb3 -std=c++17 -O0 -Wall -Wextra -Weffc++ -Wa
 -fstrict-overflow -flto-odr-type-merging -fno-omit-frame-pointer -Wlarger-than=8192 -Wstack-usage=8192 -pie -fPIE -Werror=vla \
 -fsanitize=address,alignment,bool,bounds,enum,float-cast-overflow,float-divide-by-zero,integer-divide-by-zero,leak,nonnull-attribute,null,object-size,return,returns-nonnull-attribute,shift,signed-integer-overflow,undefined,unreachable,vla-bound,vptr
 
-LIST_OBJ := ./build/main.o ./build/bin_tree.o ./build/dump.o
+LIST_OBJ := ./build/main.o ./build/bin_tree.o ./build/dump.o ./build/akinator.o
 
 all: tree
 
@@ -23,6 +23,9 @@ tree: $(LIST_OBJ)
 	g++ $(CXXFLAGS) -c $< -o $@
 
 ./build/dump.o: ./dump.cpp
+	g++ $(CXXFLAGS) -c $< -o $@
+
+./build/akinator.o: ./akinator.cpp
 	g++ $(CXXFLAGS) -c $< -o $@
 
 run: tree

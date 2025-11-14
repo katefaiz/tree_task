@@ -28,12 +28,12 @@ TreeError TreeDump(Tree *tree) {
 
     fclose(filestream);
 
-    int id = rand() % 20 + 1;
+    int id = rand();
     sprintf(buffer, "dot -Tpng tree.dot -o png/dump%d.png", id);
     int status = system(buffer);
     if (status != 0) {
         free(buffer);
-        return TREE_MEMORY_ERROR;
+        return TREE_FILE_ERROR;
     }
     free(buffer);
 
@@ -59,7 +59,7 @@ TreeError DumpCreateNode(Node* node, FILE *filestream) {
     assert(filestream);
 
     fprintf(filestream, "\tnode%p[shape=Mrecord, style=\"rounded, filled\", fillcolor=\"lightgreen\", "
-                        "label=\"{%p | {%d} | {%p | %p}}\"]\n", 
+                        "label=\"{%p | {%s} | {%p | %p}}\"]\n", 
                         node, node, node->value, node->left, node->right);
 
     if (node->left) {

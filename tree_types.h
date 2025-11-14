@@ -2,9 +2,9 @@
 #define TREE_TYPES_H
 
 #include <math.h>
-#define TreeElem int
+#define TreeElem char*
 #define POIZON 666
-#define BUFFER_CONST 1024
+#define BUFFER_CONST 5
 
 struct Node {
     TreeElem value;
