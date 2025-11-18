@@ -15,7 +15,7 @@ TreeError Akinator(Tree* tree) {
         Node* root = NodeInit(strdup("nothing"), NULL, NULL);
         tree = TreeInit(1, root);
     }
-    char play_again[BUFFER_CONST] = {};
+    char play_again[SHORT_BUFFER_CONST] = {};
 
     do {
         printf("Guess the object, and I'll try to guess!\n");
@@ -24,7 +24,7 @@ TreeError Akinator(Tree* tree) {
         AkinatorFindNode(tree, tree->root);
 
         printf("\nPlay again? (YES/STOP): ");
-        scanf("%s", play_again); // fgets? чтобы считывало ограниченное количество символов
+        scanf("%5s", play_again); // fgets? чтобы считывало ограниченное количество символов
         getchar();
         
     } while (strcmp(play_again, "STOP") != 0);
@@ -37,8 +37,8 @@ TreeError AkinatorCreateObject(Tree* tree, Node* current_node) {
     assert(current_node);
     assert(tree);
 
-    char* new_object = (char*)calloc(BUFFER_CONST, sizeof(char));
-    char* difference = (char*)calloc(BUFFER_CONST, sizeof(char));
+    char* new_object = (char*)calloc(LONG_BUFFER_CONST, sizeof(char));
+    char* difference = (char*)calloc(LONG_BUFFER_CONST, sizeof(char));
 
     if (new_object == NULL || difference == NULL) {
         printf("Calloc error\n");
@@ -70,12 +70,12 @@ TreeError AkinatorFindNode(Tree* tree, Node* current_node) {
     assert(current_node);
     assert(tree);
 
-    char user_answer[BUFFER_CONST] = {};    
+    char user_answer[SHORT_BUFFER_CONST] = {};    
 
     if (current_node->left == NULL && current_node->right == NULL) {
         printf("I think your object is %s\n", current_node->value);
         printf("Am I right?\n");
-        scanf("%s", user_answer);
+        scanf("%5s", user_answer);
         getchar();
 
         if (strcmp(user_answer, "YES") == 0) {
@@ -86,7 +86,7 @@ TreeError AkinatorFindNode(Tree* tree, Node* current_node) {
         }
     } else { // если не конец дерева
         printf("Did your object %s? (YES/NO): ", current_node->value);
-        scanf("%s", user_answer);
+        scanf("%5s", user_answer);
         getchar();
 
         if (strcmp(user_answer, "YES") == 0) {
@@ -114,14 +114,14 @@ TreeError TreeSaveToFile(Tree* tree, const char* filename) {
     return result;
 }
 
-TreeError днTreeSaveNodeToFile(Node* node, FILE* filestream) {
+TreeError TreeSaveNodeToFile(Node* node, FILE* filestream) {
     assert(filestream);
     if (node == NULL) {
         return TREE_NO_ERROR;
     }
 
-    fprintf(filestream, "(");
-    fprintf(filestream, "%s", node->value);
+    fprintf(filestream, "(\"");
+    fprintf(filestream, "%s\"", node->value);
     
     if (node->left != NULL) {
         fprintf(filestream, " ");
@@ -138,210 +138,108 @@ TreeError днTreeSaveNodeToFile(Node* node, FILE* filestream) {
     return TREE_NO_ERROR;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// size_t CountNodes(Node* node) {
-//     if (node == NULL) {
-//         return 0;
-//     }
-//     return 1 + CountNodes(node->left) + CountNodes(node->right);
-// }
-
-// TreeError TreeLoadFromString(Tree* tree, const char* str) {
-//     assert(tree);
-//     assert(str);
-
-//     const char* str_ptr = str; // норм const?
-//     tree->root = NodeLoadFromString(&str_ptr);
+TreeError TreeLoadFromFile(Tree* tree, const char* filename) {
+    assert(tree);
+    assert(filename);
+
+    FILE *file = fopen("data_tree.txt", "r");
+    if (file == NULL) {
+        printf("Cannot open file: %s\n", filename);
+        return TREE_FILE_ERROR;
+    }
+    char *buffer = (char*)calloc(LONG_BUFFER_CONST, sizeof(char));  
+    if (buffer == NULL) {
+        printf("Calloc trror\n");
+        return TREE_MEMORY_ERROR;
+    }
+    char *ptr = buffer; 
+    int c = 0;
+    while ((c = fgetc(file)) != EOF) {
+        *ptr = (char)c; 
+        ptr++;          
+    }
+    *ptr = '\0'; 
     
-//     if (tree->root == NULL) {
-//         printf("Read file error\n");
-//         return TREE_FILE_ERROR;
-//     }
+    fclose(file);
 
-//     tree->size = CountNodes(tree->root);
+    CreateTreeFromStr(tree, buffer);
     
-//     return TREE_NO_ERROR;
-// }
+    free(buffer);
+    return TREE_NO_ERROR;
+}
 
-// Node* NodeLoadFromString(const char** str_ptr) {
-//     assert(str_ptr);
+size_t CountNodes(Node* node) {
+    if (node == NULL) {
+        return 0;
+    }
+    return 1 + CountNodes(node->left) + CountNodes(node->right);
+}
+
+void SkipSpace(const char** str_ptr) {
+    while (**str_ptr == ' ' || **str_ptr == '\n') {
+        (*str_ptr)++;
+    }
+    return;
+}
+
+TreeError CreateTreeFromStr(Tree* tree, const char* str) {
+    assert(tree);
+    assert(str);
+
+    const char* str_ptr = str; // норм const?
+    tree->root = CreateNodeFromStr(&str_ptr);
     
-//     while (**str_ptr == ' ' || **str_ptr == '\n') {
-//         (*str_ptr)++;
-//     }
+    if (tree->root == NULL) {
+        printf("Read file error\n");
+        return TREE_FILE_ERROR;
+    }
+    tree->size = CountNodes(tree->root);
     
-//     (*str_ptr)++; //пропускаем (
+    return TREE_NO_ERROR;
+}
+
+Node* CreateNodeFromStr(const char** str_ptr) {
+    assert(str_ptr);
     
-//     while (**str_ptr == ' ' || **str_ptr == '\n') {
-//         (*str_ptr)++;
-//     }
+    SkipSpace(str_ptr);
+    if (**str_ptr != '(') {
+        return NULL; 
+    }
     
-//     // Читаем название узла
-//     const char* name_start = *str_ptr;
-//     size_t name_len = 0;
+    (*str_ptr)++; //пропускаем (
+    SkipSpace(str_ptr);
+    (*str_ptr)++; // пропускаем "
+
+    const char* name_start = *str_ptr;
+    size_t name_len = 0;
     
-//     // Читаем пока не встретим пробел, закрывающую скобку или конец
-//     while (**str_ptr != ' ' && **str_ptr != ')' && **str_ptr != '\0') {
-//         (*str_ptr)++;
-//         name_len++;
-//     }
+    while (**str_ptr != '"' && **str_ptr != '\0') {
+        (*str_ptr)++;
+        name_len++;
+    }
+
+    char* name = (char*)calloc(name_len + 1, sizeof(char));
+    strncpy(name, name_start, name_len);
+    name[name_len] = '\0';
+    (*str_ptr)++; // пропускаем "
+
+    Node* node = NodeInit(name, NULL, NULL);
     
-//     if (name_len == 0) {
-//         return NULL; // Пустое название
-//     }
+    SkipSpace(str_ptr);
+
+    if (**str_ptr == '(') {
+        node->left = CreateNodeFromStr(str_ptr);
+    }
+    SkipSpace(str_ptr);
+    if (**str_ptr == '(') {
+        node->right = CreateNodeFromStr(str_ptr);
+    }
     
-//     // Копируем название
-//     char* name = (char*)malloc(name_len + 1);
-//     if (name == NULL) {
-//         return NULL;
-//     }
-//     strncpy(name, name_start, name_len);
-//     name[name_len] = '\0';
+    SkipSpace(str_ptr);
+    (*str_ptr)++; // Пропускаем ")"
     
-//     Node* node = NodeInit(name, NULL, NULL);
-//     if (node == NULL) {
-//         free(name);
-//         return NULL;
-//     }
-    
-//     // Пропускаем пробелы после названия
-//     while (**str_ptr == ' ' || **str_ptr == '\n' || **str_ptr == '\t') {
-//         (*str_ptr)++;
-//     }
-    
-//     // Рекурсивно читаем левого и правого потомка
-//     if (**str_ptr == '(') {
-//         node->left = NodeLoadFromString(str_ptr);
-//     }
-    
-//     // Пропускаем пробелы между потомками
-//     while (**str_ptr == ' ' || **str_ptr == '\n' || **str_ptr == '\t') {
-//         (*str_ptr)++;
-//     }
-    
-//     if (**str_ptr == '(') {
-//         node->right = NodeLoadFromString(str_ptr);
-//     }
-    
-//     // Пропускаем пробелы перед закрывающей скобкой
-//     while (**str_ptr == ' ' || **str_ptr == '\n' || **str_ptr == '\t') {
-//         (*str_ptr)++;
-//     }
-    
-//     // Проверяем закрывающую скобку
-//     if (**str_ptr != ')') {
-//         NodeDestroy(node);
-//         return NULL;
-//     }
-//     (*str_ptr)++; // Пропускаем ")"
-    
-//     return node;
-// }
+    return node;
+}
 
 
 

@@ -4,7 +4,8 @@
 #include <math.h>
 #define TreeElem char*
 #define POIZON 666
-#define BUFFER_CONST 5
+#define SHORT_BUFFER_CONST 6 //для yes/no
+#define LONG_BUFFER_CONST 1024 //для остальных ответов
 
 struct Node {
     TreeElem value;

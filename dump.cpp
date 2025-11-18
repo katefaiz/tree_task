@@ -20,7 +20,7 @@ TreeError TreeDump(Tree *tree) {
     fprintf(filestream, "\n");
     fprintf(filestream, "}");
 
-    char* buffer = (char*)calloc(BUFFER_CONST, sizeof(char));
+    char* buffer = (char*)calloc(LONG_BUFFER_CONST, sizeof(char));
     if (buffer == NULL) {
         printf("Calloc error\n");
         return TREE_MEMORY_ERROR;
@@ -58,9 +58,10 @@ TreeError DumpCreateNode(Node* node, FILE *filestream) {
     assert(node);
     assert(filestream);
 
-    fprintf(filestream, "\tnode%p[shape=Mrecord, style=\"rounded, filled\", fillcolor=\"lightgreen\", "
+    const char* fillcolor = (node->left == NULL && node->right == NULL) ? "lightcoral" : "lightgreen"; 
+    fprintf(filestream, "\tnode%p[shape=Mrecord, style=\"rounded, filled\", fillcolor=\"%s\", "
                         "label=\"{%p | {%s} | {%p | %p}}\"]\n", 
-                        node, node, node->value, node->left, node->right);
+                        node, fillcolor, node, node->value, node->left, node->right);
 
     if (node->left) {
         fprintf(filestream, "\tnode%p -> node%p\n", node, node->left);
@@ -84,7 +85,7 @@ TreeError MakeHTML(const Tree *tree, FILE *html_file, int test_id) {
     fprintf(html_file, "TREE_DUMP\n");
 
     fprintf(html_file, "    Sort Tree : ");
-    char* buffer = (char*)calloc(BUFFER_CONST, sizeof(char));
+    char* buffer = (char*)calloc(LONG_BUFFER_CONST, sizeof(char));
     PrintTree(tree->root, buffer);
     fprintf(html_file, "%s\n", buffer);
     fprintf(html_file, "\n");
